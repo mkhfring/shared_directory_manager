@@ -1,4 +1,7 @@
+import pytest
+
 from directory_manager import SMBManager
+from directory_manager.exceptions import ConnectionException
 
 
 def test_samba_manager():
@@ -11,4 +14,14 @@ def test_samba_manager():
     shared_directories = smb_manager._list_shared_directories()
     assert shared_directories is not None
     assert smb_manager.get_shared_directory == 'KioskShare'
+
+def test_samba_connection_error():
+    smb_manager = SMBManager(
+        '192.168.15.135',
+        'kiosktest',
+        'Wrongpass',
+        'kioskshare'
+    )
+    with pytest.raises(ConnectionException):
+        smb_manager._connect()
 

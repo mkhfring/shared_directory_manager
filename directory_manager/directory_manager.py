@@ -1,5 +1,5 @@
-
 from smb.SMBConnection import SMBConnection
+from .exceptions import ConnectionException
 
 
 class DirectoryMager():
@@ -58,10 +58,17 @@ class SMBManager(DirectoryMager):
             self.server_ip,
             self.server_port
         )
-        return is_connected
+        if not is_connected:
+            raise ConnectionException('Fail to connect to the samba server')
+
+        return self.connection
+            
+
 
     @property
     def get_shared_directory(self):
+
+        #todo: Take care if there are more than one shared directory
         shared_directories = self._list_shared_directories()
         if len(shared_directories) > 0:
             return shared_directories[0]

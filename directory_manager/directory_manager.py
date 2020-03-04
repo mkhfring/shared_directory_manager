@@ -30,20 +30,19 @@ class SMBManager(DirectoryMager):
     def __init__(self, ip, user_name, password, server_name, port=445):
         super().__init__(ip, user_name, password, server_name, port)
 
-    def list_shared_directories(self):
+    def _list_shared_directories(self):
         if not self.connection:
-            is_connected = self._connect()
+            self._connect()
 
-        if is_connected:
-            shares = self.connection.listShares()
-            shared_directories = [
-                share.name for share in shares\
-                if not share.isSpecial and share.name not in [
-                    'NETLOGON',
-                    'SYSVOL'
-                ]
+        shares = self.connection.listShares()
+        shared_directories = [
+            share.name for share in shares\
+            if not share.isSpecial and share.name not in [
+                'NETLOGON',
+                'SYSVOL'
             ]
-        
+        ]
+
         return shared_directories
 
 
@@ -60,4 +59,10 @@ class SMBManager(DirectoryMager):
             self.server_port
         )
         return is_connected
+
+    @property
+    def get_shared_directory(self):
+        shared_directories = self._list_shared_directories()
+        if len(shared_directories) > 0:
+            return shared_directories[0]
 

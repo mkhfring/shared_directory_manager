@@ -8,6 +8,7 @@ def test_samba_manager():
         'Kss@1$ba',
         'kioskshare'
     )
-    shared_directories = smb_manager.list_shared_directories()
+    shared_directories = smb_manager._list_shared_directories()
     assert shared_directories is not None
-    assert shared_directories[0] == 'KioskShare'
+    assert smb_manager.get_shared_directory == 'KioskShare'
+

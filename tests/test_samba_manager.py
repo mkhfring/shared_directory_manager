@@ -43,3 +43,16 @@ def test_samba_manager_get_file():
     assert os.path.exists('tests/data/flower.jpg')
     os.remove('tests/data/flower.jpg')
 
+def test_samba_manager_put_file():
+    smb_manager = SMBManager(
+        '192.168.15.135',
+        'kiosktest',
+        'Kss@1$ba',
+        'kioskshare'
+    )
+    file_size = smb_manager.put_file(
+       'tests/data/f.jpg',
+       'flower.jpg'
+    )
+    assert file_size is not None
+

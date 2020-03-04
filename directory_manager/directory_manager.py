@@ -71,7 +71,24 @@ class SMBManager(DirectoryMager):
         self.connection = None
 
     def put_file(self, local_file_path, samba_file_path):
-        pass
+        shared_directory = self.get_shared_directory
+        if not self.connection:
+            self._connect()
+
+        with open(local_file_path, 'rb') as file_obj:
+            try:
+                file_size = self.connection.storeFile(
+                    shared_directory,
+                    samba_file_path,
+                    file_obj
+                )
+            except Exception as e:
+                raise e
+
+            finally:
+                self._disconnect()
+
+        return (file_size)
 
     def get_file(self, samba_file_path, local_file_path):
         shared_directory = self.get_shared_directory

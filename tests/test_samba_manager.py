@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from directory_manager import SMBManager
@@ -24,4 +26,20 @@ def test_samba_connection_error():
     )
     with pytest.raises(ConnectionException):
         smb_manager._connect()
+
+def test_samba_manager_get_file():
+    smb_manager = SMBManager(
+        '192.168.15.135',
+        'kiosktest',
+        'Kss@1$ba',
+        'kioskshare'
+    )
+    file_attr, file_size = smb_manager.get_file(
+        'f.jpg',
+        'tests/data/flower.jpg'
+    )
+    assert file_attr is not None
+    assert file_size is not None
+    assert os.path.exists('tests/data/flower.jpg')
+    os.remove('tests/data/flower.jpg')
 
